@@ -1,23 +1,28 @@
 import { app } from '@/firebase/firebaseconfig';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
 
 const auth = getAuth(app);
 
 export function signupWithEmailPassword(email: string, password: string) {
   console.log(email, password, 'inside func')
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      // Signed up 
-      const { email, uid } = userCredential.user;
-      console.log(email, uid, 'user created successfully.', userCredential);
-      // ...
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.error(errorMessage);
-      // ..
-    });
+  // try {
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed up 
+        console.log('userCredential', userCredential)
+        sendEmailVerification(userCredential.user)
+        const { email, uid } = userCredential.user;
+        console.log(email, uid, 'user created successfully.', userCredential);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.error(errorMessage);
+        // ..
+      });
+  // }
 }
 
 
