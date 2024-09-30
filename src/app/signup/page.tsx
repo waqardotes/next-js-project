@@ -1,22 +1,21 @@
 "use client";
 
+import AuthForm from "@/components/authform";
 import { signupWithEmailPassword } from "@/firebase/firebaseauth";
-import AuthForm from "../components/authform";
 import Link from "next/link";
 
 export default function Signup() {
-  const signup = (email: string, password: string) => {
-    // console.log("Signup Function", email, password);
-    signupWithEmailPassword(email, password);
-
+  const signup = (email: string, password: string, rollNum?: any, studentName?: any) => {
+    console.log("Signup Function", email, password, rollNum, studentName);
+    signupWithEmailPassword(email, password, rollNum, studentName);
   };
   return (
     <>
-      <h2>SignUp</h2>
-      <AuthForm
+    <h1>SignUp</h1>
+      <AuthForm 
         btnFunc={signup}
-        btnLabel={"Signup"}
-      />
+        btnLabel={"Signup"} 
+    />
       <Link href={"./login"}>
         <p>Already have an account? Login here.</p>
       </Link>
