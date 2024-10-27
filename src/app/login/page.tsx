@@ -1,25 +1,39 @@
 "use client";
 
 import AuthForm from "@/components/authform";
-import { loginWithEmailPassword } from "@/firebase/firebaseauth";
+import { auth } from "@/firebase/firebaseauth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 
 export default function Login() {
-  const login = (email: string, password: string) => {
+  const login = async (email: string, password: string) => {
     console.log("Login Function", email, password);
-    loginWithEmailPassword(email, password);
+    try {
+      let userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const userData = userCredential.user;
+      console.log(userData, "userData");
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
     <>
-    <h1>LogIn</h1>
-      <AuthForm 
-        btnLabel={"Login"} 
-        btnFunc={login}
+      <div className="flex flex-col justify-center items-center mt-20">
+        <h1>LogIn</h1>
+        <AuthForm
+          func={login}
         />
-      <Link href={"./signup"}>
-        <p>Do not have an account? Signup here.</p>
-      </Link>
+        <p>Do not have an account?
+          <Link href={"./signup"}>
+            Signup here.
+          </Link>
+        </p>
+      </div>
     </>
   );
 }
