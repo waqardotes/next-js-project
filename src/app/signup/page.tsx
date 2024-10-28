@@ -7,8 +7,11 @@ import Link from "next/link";
 import { UserRole } from "../types/user-role-type";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebasefirestore";
+import { useRouter } from "next/navigation";
 
 export default function Signup() {
+  const route = useRouter();
+
   const signup = async (email: string, password: string, role?: any) => {
     try {
       let userCredential = await createUserWithEmailAndPassword(
@@ -31,6 +34,11 @@ export default function Signup() {
     let user = {email, uid, role};
     let docRef = doc(db, "users", uid);
     await setDoc(docRef, user);
+    if (role === "company") {
+      route.push("/company/all-jobs");
+    } else if (role === "job seeker") {
+      route.push("/jobseeker")
+    }
   }
   return (
     <>

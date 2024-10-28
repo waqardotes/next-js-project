@@ -1,22 +1,20 @@
 "use client";
 
-import { app } from "@/firebase/firebaseconfig";
+import { UserType } from "@/app/types/user-type";
+import { app, db } from "@/firebase/firebaseconfig";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
-
-type UserType = {
-    email: string | null,
-    uid: string
-}
 
 type AuthContextProviderType = {
     children: ReactNode
 }
 
 type AuthContextType = {
-    user: UserType | null
+    user: UserType | null;
+    setUser: (user: UserType | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -28,11 +26,10 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
 
     useEffect(() => {
         const auth = getAuth(app);
-        onAuthStateChanged(auth, (loggedInUser) => {
-            if (loggedInUser) {
-                const { email, uid } = loggedInUser;
-                setUser({ email, uid });
-                route.push("/home");
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const uid = user.uid;
+                fetchUserData(uid);
             }
             else {
                 console.log('inside onauthstatechange else statement');
@@ -40,10 +37,23 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
                 route.push("/");
             }
         });
-    }, [])
+    }, []);
+
+    const fetchUserData = async (uid: string) => {
+      let docRef = doc(db, "users", uid);
+      try {
+        let userFound = await getDoc(docRef);
+        let user = userFound.data();
+        console.log('Auth try', user);
+        if (!user) return;
+        setUser(user as UserType)
+      } catch (e) {
+        console.error("AuthContextProvidr error", e);
+      }
+    }
 
     return (
-        <AuthContext.Provider value={{ user }} >
+        <AuthContext.Provider value={{ user, setUser }} >
             {children}
         </AuthContext.Provider>
     )
