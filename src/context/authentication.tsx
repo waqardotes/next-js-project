@@ -45,6 +45,12 @@ export function AuthContextProvider({ children }: AuthContextProviderType) {
         let userFound = await getDoc(docRef);
         let user = userFound.data();
         console.log('Auth try', user);
+        if (user?.role === "company") {
+          route.push("/company/all-jobs");
+        } else if (user?.role === "job seeker") {
+          route.push("/jobseeker")
+        }
+        
         if (!user) return;
         setUser(user as UserType)
       } catch (e) {

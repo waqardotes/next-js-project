@@ -1,7 +1,9 @@
+import Navbar from "@/components/navbar";
+
 export default function AllJobs() {
   return (
     <>
-    <h1>Company all jobs</h1>
+    <Navbar title={'All jobs'}/>
     </>
   )
 }

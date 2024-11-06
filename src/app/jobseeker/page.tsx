@@ -1,8 +1,10 @@
+import Navbar from "@/components/navbar";
+
 export default function JobSeekerHome() {
 
   return (
     <>
-    <h1>Job Seeker</h1>
+    <Navbar title={'Job Seeker'}/>
     </>
   )
 }

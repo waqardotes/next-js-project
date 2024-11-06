@@ -15,7 +15,7 @@ export default function Login() {
         password
       );
       const userData = userCredential.user;
-      console.log(userData, "userData");
+      console.log("userData", userData);
     } catch (e) {
       console.error(e);
     }
